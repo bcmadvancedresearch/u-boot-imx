@@ -155,7 +155,7 @@ int board_mmc_getwp(struct mmc *mmc)
 	struct fsl_esdhc_cfg *cfg = (struct fsl_esdhc_cfg *)mmc->priv;
   /* There is no WP on eMMC (SD4), assume always present */
 	if (cfg->esdhc_base == USDHC3_BASE_ADDR)
-		return !gpio_get_value(AR6MX_SD3_WP);
+		return gpio_get_value(AR6MX_SD3_WP);
 	else
 		return 1;
 }
@@ -343,6 +343,7 @@ static const struct boot_mode board_boot_modes[] = {
 
 int board_late_init(void)
 {
+	setenv("cpu", get_imx_type(get_cpu_type()));
 #ifdef CONFIG_CMD_BMODE
 	add_board_boot_modes(board_boot_modes);
 #endif
