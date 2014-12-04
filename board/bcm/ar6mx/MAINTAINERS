@@ -1,0 +1,6 @@
+AR6MX BOARD
+M:	Frodo Lai <frodo_lai@bcmcom.com>
+S:	Maintained
+F:	board/bcm/ar6mx/
+F:	include/configs/ar6mx.h
+F:	configs/ar6mx_defconfig
