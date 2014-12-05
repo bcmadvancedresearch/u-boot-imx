@@ -84,14 +84,20 @@
 
 /* Environment */
 #define CONFIG_ENV_OVERWRITE
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
-#define CONFIG_ENV_SPI_MODE		CONFIG_SF_DEFAULT_MODE
-#define CONFIG_ENV_SPI_BUS		CONFIG_SF_DEFAULT_BUS
-#define CONFIG_ENV_SPI_CS		CONFIG_SF_DEFAULT_CS
-#define CONFIG_ENV_SECT_SIZE		(64 * 1024)
-#define CONFIG_ENV_SIZE			(8 * 1024)
-#define CONFIG_ENV_OFFSET		(768 * 1024)
+#define CONFIG_ENV_IS_IN_MMC
+#if defined(CONFIG_ENV_IS_IN_MMC)
+  #define CONFIG_ENV_OFFSET              (8 * 64 * 1024)
+  #define CONFIG_ENV_SIZE                (8 * 1024)
+  #define CONFIG_SYS_MMC_ENV_DEV         0
+#elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
+  #define CONFIG_ENV_OFFSET              (512 * 1024)
+  #define CONFIG_ENV_SECT_SIZE           (64 * 1024)
+  #define CONFIG_ENV_SIZE                (8 * 1024)
+  #define CONFIG_ENV_SPI_BUS             CONFIG_SF_DEFAULT_BUS
+  #define CONFIG_ENV_SPI_CS              CONFIG_SF_DEFAULT_CS
+  #define CONFIG_ENV_SPI_MODE            CONFIG_SF_DEFAULT_MODE
+  #define CONFIG_ENV_SPI_MAX_HZ          CONFIG_SF_DEFAULT_SPEED
+#endif
 
 /* SPI */
 #define CONFIG_SPI
