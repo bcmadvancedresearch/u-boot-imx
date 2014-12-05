@@ -31,6 +31,7 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 #define AR6MX_ENET_RST  IMX_GPIO_NR(1, 25)
+#define AR6MX_SPI_BUS3_CS0  IMX_GPIO_NR(4, 24)
 #define AR6MX_CLK125_EN IMX_GPIO_NR(6, 24)
 #define AR6MX_SD3_CD IMX_GPIO_NR(7, 0)
 #define AR6MX_SD3_WP IMX_GPIO_NR(7, 1)
@@ -133,6 +134,13 @@ static void setup_iomux_enet(void)
 static void setup_iomux_uart(void)
 {
 }
+
+#ifdef CONFIG_MXC_SPI
+int board_spi_cs_gpio(unsigned bus, unsigned cs)
+{
+	return (bus == 2 && cs == 0) ? (AR6MX_SPI_BUS3_CS0) : -1;
+}
+#endif
 
 #ifdef CONFIG_FSL_ESDHC
 struct fsl_esdhc_cfg usdhc_cfg[2] = {
