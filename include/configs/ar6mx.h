@@ -106,6 +106,91 @@
   #define CONFIG_ENV_SPI_MAX_HZ          CONFIG_SF_DEFAULT_SPEED
 #endif
 
+#define CONFIG_BOOTDELAY          3
+#define CONFIG_IPADDR             10.1.2.156
+#define CONFIG_SERVERIP           10.1.2.189
+#define CONFIG_MMCROOT      "/dev/mmcblk0p2"
+#define CONFIG_CONSOLE_DEV    "ttymxc0"
+
+#define CONFIG_EXTRA_ENV_SETTINGS \
+	"script=boot.scr\0" \
+	"image=uImage\0" \
+	"boot_fdt=try\0" \
+	"console=" CONFIG_CONSOLE_DEV "\0" \
+	"fdt_high=0xffffffff\0"	  \
+	"initrd_high=0xffffffff\0" \
+	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
+	"mmcpart=1\0" \
+	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+	"bootdevs=mmc usb sata\0" \
+	"fdt_addr=0x18000000\0" \
+	"fdt_high=0xffffffff\0"	  \
+	"initrd_high=0xffffffff\0" \
+	"bootargs_mmc1=console=ttymxc0,115200 console=tty1\0" \
+	"bootargs_mmc2a=video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24,bpp=32 " \
+			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
+	"bootargs_mmc2b=video=mxcfb0:dev=ldb,1024x600M@60,if=RGB666,bpp=32 " \
+			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
+	"bootargs_mmc3a=root=/dev/mmcblk0p1 rootwait consoleblank=0 \0" \
+	"bootargs_mmc3b=root=/dev/mmcblk0p2 rootwait consoleblank=0 \0" \
+	"bootargs_hdmi=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2a} \0" \
+	"bootargs_ldb=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2b} \0" \
+	"detect_hdmi=i2c dev 1;" \
+			"if i2c probe 0x50; then " \
+				"run bootargs_hdmi; " \
+			"else " \
+				"run bootargs_ldb; " \
+			"fi\0" \
+	"bootcmd_mmc=run detect_hdmi; setenv bootargs ${bootargs} ${bootargs_mmc3a}; " \
+			"mmc dev 0; mmc read 0x10800000 0x800 0x2000; bootm\0" \
+	"mmcargs=run detect_hdmi; setenv bootargs ${bootargs} ${bootargs_mmc3b};\0" \
+	"loadimage=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
+	"loadfdt=load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
+	"mmcboot=echo Booting from mmc ...; " \
+		"run mmcargs; " \
+		"if itest.s \"xSOLO\" == \"x${cpu}\" || itest.s \"xDL\" == \"x${cpu}\" ; then " \
+			"setenv fdt_file imx6dl-ar6mx.dtb ;" \
+		"else " \
+			"setenv fdt_file imx6dl-ar6mx.dtb ;" \
+		"fi; " \
+		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
+			"if run loadfdt; then " \
+				"bootm ${loadaddr} - ${fdt_addr}; " \
+			"else " \
+				"if test ${boot_fdt} = try; then " \
+					"bootm; " \
+				"else " \
+					"echo WARN: Cannot load the DT; " \
+				"fi; " \
+			"fi; " \
+		"else " \
+			"bootm; " \
+		"fi;\0" \
+	"loadbootscript=for dtype in ${bootdevs}" \
+		"; do " \
+			"if itest.s \"xusb\" == \"x${dtype}\" ; then " \
+				"usb start ;" \
+			"fi; " \
+			"for disk in 0 1 ; do ${dtype} dev ${disk} ;" \
+				"load " \
+					"${dtype} ${disk}:1 " \
+					"10008000 " \
+					"/${script}" \
+					"&& source 10008000 ; " \
+			"done ; " \
+		"done;\0" \
+
+#define CONFIG_BOOTCOMMAND \
+	"if run loadbootscript; then; " \
+		"else " \
+		"if run loadimage; then; " \
+			"run mmcboot; " \
+		"else " \
+			"if run bootcmd_mmc; then; " \
+			"fi; " \
+		"fi;" \
+	"fi"
+
 /* SPI */
 #define CONFIG_SPI
 #define CONFIG_MXC_SPI
