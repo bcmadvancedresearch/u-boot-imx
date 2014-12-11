@@ -44,8 +44,10 @@
 
 /* Filesystem support */
 #define CONFIG_CMD_EXT2
+#define CONFIG_CMD_EXT4
 #define CONFIG_CMD_FAT
 #define CONFIG_DOS_PARTITION
+#define CONFIG_CMD_FS_GENERIC
 
 /* RAM */
 #define PHYS_SDRAM_1			MMDC0_ARB_BASE_ADDR
@@ -173,6 +175,8 @@
 
 /* misc */
 #define CONFIG_BOARD_LATE_INIT
+#define CONFIG_CMD_BMODE
+#define CONFIG_CMD_SETEXPR
 #define CONFIG_SYS_GENERIC_BOARD
 #define CONFIG_STACKSIZE			(128 * 1024)
 #define CONFIG_SYS_MALLOC_LEN			(2 * 1024 * 1024)
