@@ -1,5 +1,5 @@
 /*
- * Board functions for Compulab CM-FX6 board
+ * Board functions for BCM AR6MX board
  *
  * Copyright (C) 2013, BCM Advanced Research
  *
