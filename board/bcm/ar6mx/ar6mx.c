@@ -344,7 +344,7 @@ void ldo_mode_set(int ldo_bypass)
 static const struct boot_mode board_boot_modes[] = {
 	/* 4 bit bus width */
 	{"mmc0",	MAKE_CFGVAL(0x40, 0x30, 0x00, 0x00)},
-	{"mmc1",	MAKE_CFGVAL(0x40, 0x38, 0x00, 0x00)},
+	{"mmc1",	MAKE_CFGVAL(0x60, 0x58, 0x00, 0x00)},
 	{NULL,		0},
 };
 #endif
