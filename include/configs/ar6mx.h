@@ -141,17 +141,20 @@
 			"else " \
 				"run bootargs_ldb; " \
 			"fi\0" \
-	"bootcmd_mmc=run detect_hdmi; setenv bootargs ${bootargs} ${bootargs_mmc3a}; " \
+	"bootcmd_mmc=run detect_hdmi; " \
+			"setenv bootargs ${bootargs} ${bootargs_mmc3a}; " \
 			"mmc dev 0; mmc read 0x10800000 0x800 0x2000; bootm\0" \
-	"mmcargs=run detect_hdmi; setenv bootargs ${bootargs} ${bootargs_mmc3b};\0" \
+	"mmcargs=run detect_hdmi; " \
+			"setenv bootargs ${bootargs} ${bootargs_mmc3b};\0" \
 	"loadimage=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
 	"loadfdt=load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
-		"if itest.s \"xSOLO\" == \"x${cpu}\" || itest.s \"xDL\" == \"x${cpu}\" ; then " \
+		"if itest.s \"x6SOLO\" == \"x${cpu}\" || " \
+			"itest.s \"x6DL\" == \"x${cpu}\"; then " \
 			"setenv fdt_file imx6dl-ar6mx.dtb ;" \
 		"else " \
-			"setenv fdt_file imx6dl-ar6mx.dtb ;" \
+			"setenv fdt_file imx6q-ar6mx.dtb ;" \
 		"fi; " \
 		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
 			"if run loadfdt; then " \
@@ -261,12 +264,15 @@
 /* misc */
 #define CONFIG_BOARD_LATE_INIT
 #define CONFIG_CMD_BMODE
+#define CONFIG_CMD_BOOTZ
 #define CONFIG_CMD_SETEXPR
 #define CONFIG_SYS_GENERIC_BOARD
 #define CONFIG_STACKSIZE			(128 * 1024)
 #define CONFIG_SYS_MALLOC_LEN			(2 * 1024 * 1024)
 #define CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS	800 /* 400 KB */
-#define CONFIG_OF_BOARD_SETUP
+
+/* Device Tree Support */
+#define CONFIG_OF_LIBFDT
 
 /* SPL */
 #include "imx6_spl.h"
