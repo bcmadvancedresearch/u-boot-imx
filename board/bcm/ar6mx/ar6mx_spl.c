@@ -487,15 +487,36 @@ static struct fsl_esdhc_cfg usdhc_cfg = {
 int board_mmc_getcd(struct mmc *mmc)
 {
 	/* Card Detect */
-	gpio_direction_input(AR6MX_SD3_CD);
-	return !gpio_get_value(AR6MX_SD3_CD);
+	return 1;
 }
 
 int board_mmc_init(bd_t *bis)
 {
+	struct src *psrc = (struct src *)SRC_BASE_ADDR;
+	unsigned reg = readl(&psrc->sbmr1) >> 11;
+
 	ar6mx_set_usdhc_iomux();
 
-	usdhc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+	/*
+	 * Upon reading BOOT_CFG register the following map is done:
+	 * Bit 11 and 12 of BOOT_CFG register can determine the current
+	 * mmc port
+	 * 0x2                  SD3
+	 * 0x3                  SD4
+	 */
+
+	switch (reg & 0x3) {
+	case 0x2:
+		usdhc_cfg.esdhc_base = USDHC3_BASE_ADDR;
+		usdhc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+		break;
+	case 0x3:
+		usdhc_cfg.esdhc_base = USDHC4_BASE_ADDR;
+		usdhc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+		usdhc_cfg.max_bus_width = 8;
+		break;
+	}
+
 
 	return fsl_esdhc_initialize(bis, &usdhc_cfg);
 }
