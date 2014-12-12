@@ -165,7 +165,7 @@ int board_mmc_getwp(struct mmc *mmc)
 	if (cfg->esdhc_base == USDHC3_BASE_ADDR)
 		return gpio_get_value(AR6MX_SD3_WP);
 	else
-		return 1;
+		return 0;
 }
 
 int board_mmc_init(bd_t *bis)
