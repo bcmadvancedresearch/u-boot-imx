@@ -170,7 +170,7 @@ int board_mmc_getwp(struct mmc *mmc)
 
 int board_mmc_init(bd_t *bis)
 {
-	s32 status = 0;
+	int ret;
 	u32 index = 0;
 
 	usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
@@ -184,12 +184,12 @@ int board_mmc_init(bd_t *bis)
 	gpio_direction_input(AR6MX_SD3_CD);
 
 	for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
-		status |= fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
-		if (status)
-			return status;
+		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
+		if (ret)
+			return ret;
 	}
 
-	return status;
+	return 0;
 }
 #endif
 
