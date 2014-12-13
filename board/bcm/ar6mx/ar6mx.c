@@ -332,14 +332,6 @@ int checkboard(void)
 	return 0;
 }
 
-#ifdef CONFIG_LDO_BYPASS_CHECK
-/* no external pmic, always ldo_enable */
-void ldo_mode_set(int ldo_bypass)
-{
-	return;
-}
-#endif
-
 #ifdef CONFIG_CMD_BMODE
 static const struct boot_mode board_boot_modes[] = {
 	/* 4 bit bus width */
