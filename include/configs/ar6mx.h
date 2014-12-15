@@ -135,8 +135,8 @@
 	"bootargs_mmc3b=root=/dev/mmcblk0p2 rootwait consoleblank=0 \0" \
 	"bootargs_hdmi=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2a} \0" \
 	"bootargs_ldb=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2b} \0" \
-	"detect_hdmi=i2c dev 1;" \
-			"if i2c probe 0x50; then " \
+	"detect_hdmi=" \
+			"if hdmidet; then " \
 				"run bootargs_hdmi; " \
 			"else " \
 				"run bootargs_ldb; " \
@@ -251,6 +251,22 @@
 /* GPIO */
 #define CONFIG_MXC_GPIO
 
+/* Framebuffer and LCD */
+#define CONFIG_VIDEO
+#define CONFIG_VIDEO_IPUV3
+#define CONFIG_CFB_CONSOLE
+#define CONFIG_VGA_AS_SINGLE_DEVICE
+#define CONFIG_SYS_CONSOLE_IS_IN_ENV
+#define CONFIG_VIDEO_BMP_RLE8
+#define CONFIG_SPLASH_SCREEN
+#define CONFIG_BMP_16BPP
+#define CONFIG_VIDEO_LOGO
+#define CONFIG_IPUV3_CLK          260000000
+#define CONFIG_CMD_HDMIDETECT
+#define CONFIG_CONSOLE_MUX
+#define CONFIG_IMX_HDMI
+#define CONFIG_IMX_VIDEO_SKIP
+
 /* Boot */
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 #define CONFIG_LOADADDR			0x10800000
@@ -262,6 +278,7 @@
 #define CONFIG_REVISION_TAG
 
 /* misc */
+#define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_BOARD_LATE_INIT
 #define CONFIG_CMD_BMODE
 #define CONFIG_CMD_BOOTZ
