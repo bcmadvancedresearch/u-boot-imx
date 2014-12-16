@@ -15,7 +15,7 @@
 /* Machine config */
 #define CONFIG_MX6
 #define CONFIG_SYS_LITTLE_ENDIAN
-#define CONFIG_MACH_TYPE		4517
+#define CONFIG_MACH_TYPE		8892
 #define CONFIG_SYS_HZ			1000
 
 /* Display information on boot */
@@ -65,7 +65,7 @@
 
 /* Serial console */
 #define CONFIG_MXC_UART
-#define CONFIG_MXC_UART_BASE		UART1_BASE
+#define CONFIG_MXC_UART_BASE		UART4_BASE
 #define CONFIG_BAUDRATE			115200
 #define CONFIG_SYS_BAUDRATE_TABLE	{9600, 19200, 38400, 57600, 115200}
 
@@ -73,7 +73,7 @@
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_HUSH_PARSER
 #define CONFIG_AUTO_COMPLETE
-#define CONFIG_SYS_PROMPT	"AR6MX > "
+#define CONFIG_SYS_PROMPT	"AR6MXCS > "
 #define CONFIG_SYS_CBSIZE	1024
 #define CONFIG_SYS_MAXARGS	16
 #define CONFIG_CMDLINE_EDITING
@@ -110,7 +110,7 @@
 #define CONFIG_IPADDR             10.1.2.156
 #define CONFIG_SERVERIP           10.1.2.189
 #define CONFIG_MMCROOT      "/dev/mmcblk0p2"
-#define CONFIG_CONSOLE_DEV    "ttymxc0"
+#define CONFIG_CONSOLE_DEV    "ttymxc3"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"script=boot.scr\0" \
@@ -126,7 +126,7 @@
 	"fdt_addr=0x18000000\0" \
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
-	"bootargs_mmc1=console=ttymxc0,115200 console=tty1\0" \
+	"bootargs_mmc1=console=ttymxc3,115200 console=tty1\0" \
 	"bootargs_mmc2a=video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24,bpp=32 " \
 			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
 	"bootargs_mmc2b=video=mxcfb0:dev=ldb,1024x600M@60,if=RGB666,bpp=32 " \
@@ -262,6 +262,7 @@
 #define CONFIG_REVISION_TAG
 
 /* misc */
+#define CONFIG_BOARD_EARLY_INIT_F
 #define CONFIG_BOARD_LATE_INIT
 #define CONFIG_CMD_BMODE
 #define CONFIG_CMD_BOOTZ
@@ -279,9 +280,5 @@
 #define CONFIG_SPL_MMC_SUPPORT
 #define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR	0x80 /* offset 64 kb */
 #define CONFIG_SYS_MONITOR_LEN	(CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS / 2 * 1024)
-#define CONFIG_SPL_SPI_SUPPORT
-#define CONFIG_SPL_SPI_FLASH_SUPPORT
-#define CONFIG_SYS_SPI_U_BOOT_OFFS	(64 * 1024)
-#define CONFIG_SPL_SPI_LOAD
 
 #endif	/* __CONFIG_AR6MXCS_H */
