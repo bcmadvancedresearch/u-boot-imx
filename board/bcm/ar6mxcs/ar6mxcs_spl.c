@@ -1,5 +1,5 @@
 /*
- * SPL specific code for BCM AR6MX board
+ * SPL specific code for BCM AR6MXCS board
  *
  * Copyright (C) 2014 BCM Advanced Research
  *
@@ -22,9 +22,9 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#define AR6MX_ORANGE_LED IMX_GPIO_NR(1, 4)
-#define AR6MX_GREEN_LED IMX_GPIO_NR(1, 5)
-#define AR6MX_SD3_CD IMX_GPIO_NR(7, 0)
+#define AR6MXCS_GREEN_LED1 IMX_GPIO_NR(6, 9)
+#define AR6MXCS_GREEN_LED2 IMX_GPIO_NR(6, 10)
+#define AR6MXCS_SD3_CD IMX_GPIO_NR(7, 0)
 
 /*
  * Below DRAM_RESET[DDR_SEL] = 0 which is incorrect according to
@@ -280,7 +280,7 @@ static struct mx6_mmdc_calibration mx6sdl_256x32_mmdc_calib = {
 	.p0_mpwrdlctl = 0x34342C2E,
 };
 
-static void ar6mx_spl_dram_init(void)
+static void ar6mxcs_spl_dram_init(void)
 {
 	int width = 64;
 	struct mx6_ddr3_cfg *mem = NULL;
@@ -362,39 +362,16 @@ iomux_v3_cfg_t const uart1_pads[] = {
 	IOMUX_PADS(PAD_SD3_DAT7__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 };
 
-iomux_v3_cfg_t const uart2_pads[] = {
-	IOMUX_PADS(PAD_EIM_D26__UART2_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
-	IOMUX_PADS(PAD_EIM_D27__UART2_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
-};
-
 iomux_v3_cfg_t const uart4_pads[] = {
 	IOMUX_PADS(PAD_KEY_COL0__UART4_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 	IOMUX_PADS(PAD_KEY_ROW0__UART4_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 };
 
-#define ECSPI_PAD_CTRL (PAD_CTL_HYS | PAD_CTL_SPEED_MED | \
-				PAD_CTL_DSE_40ohm | PAD_CTL_SRE_FAST)
-static iomux_v3_cfg_t const ecspi_pads[] = {
-	IOMUX_PADS(PAD_DISP0_DAT3__GPIO4_IO24 | MUX_PAD_CTRL(ECSPI_PAD_CTRL)),
-	IOMUX_PADS(PAD_DISP0_DAT2__ECSPI3_MISO | MUX_PAD_CTRL(ECSPI_PAD_CTRL)),
-	IOMUX_PADS(PAD_DISP0_DAT1__ECSPI3_MOSI | MUX_PAD_CTRL(ECSPI_PAD_CTRL)),
-	IOMUX_PADS(PAD_DISP0_DAT0__ECSPI3_SCLK  | MUX_PAD_CTRL(ECSPI_PAD_CTRL)),
-};
-
-static void ar6mx_setup_uart(void)
+static void ar6mxcs_setup_uart(void)
 {
 	SETUP_IOMUX_PADS(uart1_pads);
+	SETUP_IOMUX_PADS(uart4_pads);
 }
-
-#ifdef CONFIG_SPL_SPI_SUPPORT
-static void ar6mx_setup_ecspi(void)
-{
-	enable_cspi_clock(1, 2);
-	SETUP_IOMUX_PADS(ecspi_pads);
-}
-#else
-static void ar6mx_setup_ecspi(void) { }
-#endif
 
 #ifdef CONFIG_FSL_ESDHC
 #define USDHC_PAD_CTRL (PAD_CTL_PUS_47K_UP |			\
@@ -408,8 +385,6 @@ static iomux_v3_cfg_t const usdhc_pads[] = {
 	IOMUX_PADS(PAD_SD3_DAT1__SD3_DATA1 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 	IOMUX_PADS(PAD_SD3_DAT2__SD3_DATA2 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 	IOMUX_PADS(PAD_SD3_DAT3__SD3_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
-	/* WP */
-	IOMUX_PADS(PAD_SD3_DAT4__GPIO7_IO01    | MUX_PAD_CTRL(NO_PAD_CTRL)),
   /* CD */
 	IOMUX_PADS(PAD_SD3_DAT5__GPIO7_IO00    | MUX_PAD_CTRL(NO_PAD_CTRL)),
 
@@ -425,7 +400,7 @@ static iomux_v3_cfg_t const usdhc_pads[] = {
 	IOMUX_PADS(PAD_SD4_DAT7__SD4_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 };
 
-void ar6mx_set_usdhc_iomux(void)
+void ar6mxcs_set_usdhc_iomux(void)
 {
 	SETUP_IOMUX_PADS(usdhc_pads);
 }
@@ -467,12 +442,12 @@ void board_init_f(ulong dummy)
 	ccgr_init();
 	gpr_init();
 	timer_init();
-	ar6mx_setup_ecspi();
-	ar6mx_setup_uart();
+	ar6mxcs_setup_uart();
 	get_clocks();
 	preloader_console_init();
-	gpio_direction_output(AR6MX_GREEN_LED, 0);
-	ar6mx_spl_dram_init();
+	gpio_direction_output(AR6MXCS_GREEN_LED1, 0);
+	ar6mxcs_spl_dram_init();
+	gpio_direction_output(AR6MXCS_GREEN_LED2, 0);
 
 	memset(__bss_start, 0, __bss_end - __bss_start);
 	board_init_r(NULL, 0);
@@ -487,15 +462,36 @@ static struct fsl_esdhc_cfg usdhc_cfg = {
 int board_mmc_getcd(struct mmc *mmc)
 {
 	/* Card Detect */
-	gpio_direction_input(AR6MX_SD3_CD);
-	return !gpio_get_value(AR6MX_SD3_CD);
+	return 1;
 }
 
 int board_mmc_init(bd_t *bis)
 {
-	ar6mx_set_usdhc_iomux();
+	struct src *psrc = (struct src *)SRC_BASE_ADDR;
+	unsigned reg = readl(&psrc->sbmr1) >> 11;
 
-	usdhc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+	ar6mxcs_set_usdhc_iomux();
+
+	/*
+	 * Upon reading BOOT_CFG register the following map is done:
+	 * Bit 11 and 12 of BOOT_CFG register can determine the current
+	 * mmc port
+	 * 0x2                  SD3
+	 * 0x3                  SD4
+	 */
+
+	switch (reg & 0x3) {
+	case 0x2:
+		usdhc_cfg.esdhc_base = USDHC3_BASE_ADDR;
+		usdhc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+		break;
+	case 0x3:
+		usdhc_cfg.esdhc_base = USDHC4_BASE_ADDR;
+		usdhc_cfg.sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+		usdhc_cfg.max_bus_width = 8;
+		break;
+	}
+
 
 	return fsl_esdhc_initialize(bis, &usdhc_cfg);
 }
