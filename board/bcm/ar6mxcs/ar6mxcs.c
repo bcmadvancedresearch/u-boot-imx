@@ -32,7 +32,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#define AR6MXCS_ENET_RST  IMX_GPIO_NR(1, 25)
+#define AR6MXCS_ENET_RST  IMX_GPIO_NR(1, 27)
 #define AR6MXCS_CLK125_EN IMX_GPIO_NR(6, 24)
 #define AR6MXCS_SD3_CD IMX_GPIO_NR(7, 0)
 #define AR6MXCS_LVDS0_PWR     IMX_GPIO_NR(1, 11)
@@ -114,7 +114,7 @@ iomux_v3_cfg_t const enet_pads1[] = {
 	IOMUX_PADS(PAD_RGMII_RX_CTL__GPIO6_IO24 |
 		   MUX_PAD_CTRL(NO_PAD_CTRL)),
 	/* PHY nRST */
-	IOMUX_PADS(PAD_ENET_CRS_DV__GPIO1_IO25 | MUX_PAD_CTRL(NO_PAD_CTRL)),
+	IOMUX_PADS(PAD_ENET_RXD0__GPIO1_IO27 | MUX_PAD_CTRL(NO_PAD_CTRL)),
 };
 static iomux_v3_cfg_t enet_pads2[] = {
 	IOMUX_PADS(PAD_RGMII_RX_CTL__RGMII_RX_CTL | MUX_PAD_CTRL(NO_PAD_CTRL)),
@@ -123,7 +123,7 @@ static iomux_v3_cfg_t enet_pads2[] = {
 static void setup_iomux_enet(void)
 {
 	SETUP_IOMUX_PADS(enet_pads1);
-	/* phy reset: gpio1-25 */
+	/* phy reset: gpio1-27 */
 	gpio_direction_output(AR6MXCS_ENET_RST, 0);
   /* Straping CLK125_EN */
 	gpio_direction_output(AR6MXCS_CLK125_EN, 1);
@@ -242,7 +242,7 @@ struct display_info_t const displays[] = {{
 		.sync           = FB_SYNC_EXT,
 		.vmode          = FB_VMODE_NONINTERLACED
 } }, {
-	.bus	= 1,
+	.bus	= 2,
 	.addr	= 0x50,
 	.pixfmt	= IPU_PIX_FMT_LVDS666,
 	.detect	= detect_i2c,

@@ -135,8 +135,8 @@
 	"bootargs_mmc3b=root=/dev/mmcblk0p2 rootwait consoleblank=0 \0" \
 	"bootargs_hdmi=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2a} \0" \
 	"bootargs_ldb=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2b} \0" \
-	"detect_hdmi=i2c dev 1;" \
-			"if i2c probe 0x50; then " \
+	"detect_hdmi=" \
+			"if hdmidet; then " \
 				"run bootargs_hdmi; " \
 			"else " \
 				"run bootargs_ldb; " \
