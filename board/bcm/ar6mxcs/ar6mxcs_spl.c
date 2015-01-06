@@ -280,9 +280,23 @@ static struct mx6_mmdc_calibration mx6sdl_256x32_mmdc_calib = {
 	.p0_mpwrdlctl = 0x34342C2E,
 };
 
+static struct mx6_mmdc_calibration mx6sdl_128x32_mmdc_calib = {
+	/* write leveling calibration determine */
+	.p0_mpwldectrl0 = 0x00410046,
+	.p0_mpwldectrl1 = 0x003B003E,
+	/* Read DQS Gating calibration */
+	.p0_mpdgctrl0 = 0x0230022C,
+	.p0_mpdgctrl1 = 0x021C021C,
+	/* Read Calibration: DQS delay relative to DQ read access */
+	.p0_mprddlctl = 0x404A4E48,
+	/* Write Calibration: DQ/DM delay relative to DQS write access */
+	.p0_mpwrdlctl = 0x36342E34,
+};
+
 static void ar6mxcs_spl_dram_init(void)
 {
 	int width = 64;
+	unsigned long bank1_size;
 	struct mx6_ddr3_cfg *mem = NULL;
 	struct mx6_mmdc_calibration *calib = NULL;
 	struct mx6_ddr_sysinfo sysinfo = {
@@ -351,6 +365,15 @@ static void ar6mxcs_spl_dram_init(void)
 		mx6sdl_dram_iocfg(width, &mx6sdl_ddr_ioregs,
 				  &mx6sdl_grp_ioregs);
 	mx6_dram_cfg(&sysinfo, calib, mem);
+
+	if (is_cpu_type(MXC_CPU_MX6SOLO)) {
+		bank1_size = get_ram_size((long int *)PHYS_SDRAM_1, 0x80000000);
+		if (bank1_size == 0x20000000) {
+			mem = &h5tq2g63dfr;
+			calib = &mx6sdl_128x32_mmdc_calib;
+			mx6_dram_cfg(&sysinfo, calib, mem);
+		}
+	}
 }
 
 #define UART_PAD_CTRL  (PAD_CTL_PUS_100K_UP | \
