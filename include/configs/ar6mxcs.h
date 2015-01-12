@@ -127,7 +127,6 @@
 	"console=" CONFIG_CONSOLE_DEV "\0" \
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
-	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
 	"mmcpart=1\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"bootdevs=mmc usb sata\0" \
@@ -148,7 +147,14 @@
 				"run bootargs_hdmi; " \
 			"else " \
 				"run bootargs_ldb; " \
-			"fi\0" \
+			"fi; " \
+			"if itest.s \"x0\" == \"x${mmcdev}\"; then " \
+				"setenv bootargs_mmc3a root=/dev/mmcblk0p1 rootwait consoleblank=0;" \
+				"setenv bootargs_mmc3b root=/dev/mmcblk0p2 rootwait consoleblank=0;" \
+			"else " \
+				"setenv bootargs_mmc3a root=/dev/mmcblk1p1 rootwait consoleblank=0;" \
+				"setenv bootargs_mmc3b root=/dev/mmcblk1p2 rootwait consoleblank=0;" \
+			"fi; \0 " \
 	"bootcmd_mmc=run detect_hdmi; " \
 			"setenv bootargs ${bootargs} ${bootargs_mmc3a}; " \
 			"mmc dev 0; mmc read 0x10800000 0x800 0x2000; bootm\0" \

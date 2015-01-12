@@ -164,6 +164,8 @@ int board_mmc_init(bd_t *bis)
 {
 	int ret;
 	u32 index = 0;
+	struct src *psrc = (struct src *)SRC_BASE_ADDR;
+	unsigned reg = readl(&psrc->sbmr1) >> 11;
 
 	usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 	usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
@@ -174,10 +176,21 @@ int board_mmc_init(bd_t *bis)
 	/* SD3 card-detect */
 	gpio_direction_input(AR6MXCS_SD3_CD);
 
-	for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
-		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
-		if (ret)
-			return ret;
+	switch (reg & 0x3) {
+	case 0x2:
+		for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
+			if (ret)
+				return ret;
+		}
+		break;
+	case 0x3:
+		for (index = CONFIG_SYS_FSL_USDHC_NUM - 1; index >= 0; --index) {
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
+			if (ret)
+				return ret;
+		}
+		break;
 	}
 
 	return 0;
@@ -466,6 +479,18 @@ static const struct boot_mode board_boot_modes[] = {
 
 int board_late_init(void)
 {
+	struct src *psrc = (struct src *)SRC_BASE_ADDR;
+	unsigned reg = readl(&psrc->sbmr1) >> 11;
+
+	switch (reg & 0x3) {
+	case 0x2:
+		setenv("mmcdev", "0");
+		break;
+	case 0x3:
+		setenv("mmcdev", "0");
+		break;
+	}
+
 	setenv("cpu", get_imx_type(get_cpu_type()));
 #ifdef CONFIG_CMD_BMODE
 	add_board_boot_modes(board_boot_modes);
