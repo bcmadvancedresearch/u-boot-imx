@@ -330,22 +330,16 @@ static void setup_display(void)
 int mx6_rgmii_rework(struct phy_device *phydev)
 {
 	/* RX Data Pad Skew Register */
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x0005);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0xc002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x7777);
+	ksz9031_phy_extended_write(phydev, 0x02, MII_KSZ9031_EXT_RGMII_RX_DATA_SKEW,
+			MII_KSZ9031_MOD_DATA_NO_POST_INC, 0x7777);
 
   /* TX Data Pad Skew Register */
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x0006);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0xc002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x7777);
+	ksz9031_phy_extended_write(phydev, 0x02, MII_KSZ9031_EXT_RGMII_TX_DATA_SKEW,
+			MII_KSZ9031_MOD_DATA_NO_POST_INC, 0x7777);
 
   /* Clock Pad Skew Register */
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0x0002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x0008);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xd, 0xc002);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0xe, 0x7fff);
+	ksz9031_phy_extended_write(phydev, 0x02, MII_KSZ9031_EXT_RGMII_CLOCK_SKEW,
+			MII_KSZ9031_MOD_DATA_NO_POST_INC, 0x7FFF);
 
 	return 0;
 }
