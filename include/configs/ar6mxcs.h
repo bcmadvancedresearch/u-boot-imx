@@ -306,9 +306,7 @@
 #define CONFIG_OF_LIBFDT
 
 /* SPL */
-#include "imx6_spl.h"
 #define CONFIG_SPL_MMC_SUPPORT
-#define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR	0x80 /* offset 64 kb */
-#define CONFIG_SYS_MONITOR_LEN	(CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS / 2 * 1024)
+#include "imx6_spl.h"
 
 #endif	/* __CONFIG_AR6MXCS_H */
