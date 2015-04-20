@@ -205,8 +205,21 @@ static iomux_v3_cfg_t lvds_pads[] = {
 	IOMUX_PADS(PAD_SD2_DAT2__GPIO1_IO13 | MUX_PAD_CTRL(NO_PAD_CTRL)),
 };
 
-static void enable_hdmi(struct display_info_t const *dev)
+static void disable_lvds(struct display_info_t const *dev)
 {
+	struct iomuxc *iomux = (struct iomuxc *)IOMUXC_BASE_ADDR;
+
+	int reg = readl(&iomux->gpr[2]);
+
+	reg &= ~(IOMUXC_GPR2_LVDS_CH0_MODE_MASK |
+		 IOMUXC_GPR2_LVDS_CH1_MODE_MASK);
+
+	writel(reg, &iomux->gpr[2]);
+}
+
+static void do_enable_hdmi(struct display_info_t const *dev)
+{
+	disable_lvds(dev);
 	imx_enable_hdmi_phy();
 }
 
@@ -239,7 +252,7 @@ struct display_info_t const displays[] = {{
 	.addr	= 0,
 	.pixfmt	= IPU_PIX_FMT_RGB24,
 	.detect	= detect_hdmi,
-	.enable	= NULL,
+	.enable	= do_enable_hdmi,
 	.mode	= {
 		.name           = "HDMI",
 		.refresh        = 60,
