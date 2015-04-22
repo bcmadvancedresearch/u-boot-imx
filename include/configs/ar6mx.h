@@ -116,6 +116,7 @@
 	"script=boot.scr\0" \
 	"image=uImage\0" \
 	"boot_fdt=try\0" \
+	"bootenv=uEnv.txt\0" \
 	"console=" CONFIG_CONSOLE_DEV "\0" \
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
@@ -147,6 +148,9 @@
 	"mmcargs=run detect_hdmi; " \
 			"setenv bootargs ${bootargs} ${bootargs_mmc3b};\0" \
 	"loadimage=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
+	"loadbootenv=load mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bootenv}\0" \
+	"importbootenv=echo Importing environment from mmc${mmcdev}...; " \
+		"env import -t ${loadaddr} ${filesize};\0" \
 	"loadfdt=load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
@@ -186,6 +190,9 @@
 #define CONFIG_BOOTCOMMAND \
 	"if run loadbootscript; then; " \
 		"else " \
+		"if run loadbootenv; then; " \
+			"run importbootenv; " \
+		"fi; " \
 		"if run loadimage; then; " \
 			"run mmcboot; " \
 		"else " \
