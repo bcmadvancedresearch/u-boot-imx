@@ -389,7 +389,7 @@ static void ar6mx_setup_uart(void)
 #ifdef CONFIG_SPL_SPI_SUPPORT
 static void ar6mx_setup_ecspi(void)
 {
-	enable_cspi_clock(1, 2);
+  enable_spi_clk(1, 2);
 	SETUP_IOMUX_PADS(ecspi_pads);
 }
 #else
@@ -457,7 +457,6 @@ static void gpr_init(void)
 
 void board_init_f(ulong dummy)
 {
-	gd = &gdata;
 	/*
 	 * We don't use DMA in SPL, but we do need it in U-Boot. U-Boot
 	 * initializes DMA very early (before all board code), so the only
