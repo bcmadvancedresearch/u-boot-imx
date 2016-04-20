@@ -305,6 +305,8 @@ static void ar6mx_spl_dram_init(void)
 		.bi_on = 1,	/* Bank interleaving enabled */
 		.sde_to_rst = 0x10,	/* 14 cycles, 200us (JEDEC default) */
 		.rst_to_cke = 0x23,	/* 33 cycles, 500us (JEDEC default) */
+		.pd_fast_exit = 1, /* enable precharge power-down fast exit */
+		.ddr_type = DDR_TYPE_DDR3,
 	};
 
 	/*
