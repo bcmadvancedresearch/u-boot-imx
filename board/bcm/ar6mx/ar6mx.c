@@ -498,3 +498,54 @@ int board_late_init(void)
 #endif
 	return 0;
 }
+
+#ifdef CONFIG_FSL_FASTBOOT
+
+void board_fastboot_setup(void)
+{
+	switch (get_boot_device()) {
+#if defined(CONFIG_FASTBOOT_STORAGE_SATA)
+	case SATA_BOOT:
+		if (!getenv("fastboot_dev"))
+			setenv("fastboot_dev", "sata");
+		if (!getenv("bootcmd"))
+			setenv("bootcmd", "boota sata");
+		break;
+#endif /*CONFIG_FASTBOOT_STORAGE_SATA*/
+#if defined(CONFIG_FASTBOOT_STORAGE_MMC)
+	case SD2_BOOT:
+	case MMC2_BOOT:
+	    if (!getenv("fastboot_dev"))
+			setenv("fastboot_dev", "mmc0");
+	    if (!getenv("bootcmd"))
+			setenv("bootcmd", "boota mmc0");
+	    break;
+	case SD3_BOOT:
+	case MMC3_BOOT:
+	    if (!getenv("fastboot_dev"))
+			setenv("fastboot_dev", "mmc0");
+	    if (!getenv("bootcmd")) {
+        if(detect_hdmi(&displays[1]))
+          setenv("bootcmd", "run bootargs_hdmi;boota mmc0");
+        else
+          setenv("bootcmd", "run bootargs_ldb;boota mmc0");
+      }
+	    break;
+	case MMC4_BOOT:
+	    if (!getenv("fastboot_dev"))
+			setenv("fastboot_dev", "mmc1");
+	    if (!getenv("bootcmd")) {
+        if(detect_hdmi(&displays[1]))
+          setenv("bootcmd", "run bootargs_hdmi;boota mmc1");
+        else
+          setenv("bootcmd", "run bootargs_ldb;boota mmc1");
+      }
+	    break;
+#endif /*CONFIG_FASTBOOT_STORAGE_MMC*/
+	default:
+		printf("unsupported boot devices\n");
+		break;
+	}
+
+}
+#endif /*CONFIG_FSL_FASTBOOT*/
