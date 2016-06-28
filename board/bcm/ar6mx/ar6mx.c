@@ -548,4 +548,44 @@ void board_fastboot_setup(void)
 	}
 
 }
+
+#ifdef CONFIG_ANDROID_RECOVERY
+int check_recovery_cmd_file(void)
+{
+    int button_pressed = 0;
+    int recovery_mode = 0;
+
+    return recovery_mode || button_pressed;
+}
+
+void board_recovery_setup(void)
+{
+
+}
+
+int check_key_pressing(void)
+{
+	return 0;
+}
+
+void setup_recovery_env(void)
+{
+	//board_recovery_setup();
+}
+
+/* export to lib_arm/board.c */
+void check_recovery_mode(void)
+{
+	if (check_key_pressing()) {
+		puts("Fastboot: Recovery key pressing got!\n");
+		setup_recovery_env();
+	} else if (check_recovery_cmd_file()) {
+		puts("Fastboot: Recovery command file found!\n");
+		setup_recovery_env();
+	} else {
+		puts("Fastboot: Normal\n");
+	}
+}
+#endif /*CONFIG_ANDROID_RECOVERY*/
+
 #endif /*CONFIG_FSL_FASTBOOT*/
