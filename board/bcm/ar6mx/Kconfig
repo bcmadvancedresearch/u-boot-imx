@@ -1,0 +1,15 @@
+if TARGET_BCM_AR6MX
+
+config SYS_BOARD
+	default "ar6mx"
+
+config SYS_VENDOR
+	default "bcm"
+
+config SYS_SOC
+	default "mx6"
+
+config SYS_CONFIG_NAME
+	default "ar6mx"
+
+endif

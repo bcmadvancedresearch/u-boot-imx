@@ -514,6 +514,11 @@ config TARGET_MX6QARM2
 	bool "Support mx6qarm2"
 	select CPU_V7
 
+config TARGET_BCM_AR6MX
+	bool "Support ar6mx"
+	select CPU_V7
+	select SUPPORT_SPL
+
 config TARGET_GR6MXD
 	bool "Support gr6mxd"
 	select CPU_V7
@@ -843,6 +848,7 @@ source "board/bachmann/ot1200/Kconfig"
 source "board/balloon3/Kconfig"
 source "board/barco/platinum/Kconfig"
 source "board/barco/titanium/Kconfig"
+source "board/bcm/ar6mx/Kconfig"
 source "board/bluegiga/apx4devkit/Kconfig"
 source "board/boundary/nitrogen6x/Kconfig"
 source "board/broadcom/bcm28155_ap/Kconfig"
