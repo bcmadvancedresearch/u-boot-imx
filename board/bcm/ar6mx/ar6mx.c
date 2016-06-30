@@ -147,8 +147,18 @@ static void setup_iomux_enet(void)
 	SETUP_IOMUX_PADS(enet_pads2);
 }
 
+#define UART_PAD_CTRL  (PAD_CTL_PUS_100K_UP | \
+			PAD_CTL_SPEED_MED | PAD_CTL_DSE_40ohm | \
+				PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
+
+iomux_v3_cfg_t const uart1_pads[] = {
+	IOMUX_PADS(PAD_SD3_DAT6__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+	IOMUX_PADS(PAD_SD3_DAT7__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+};
+
 static void setup_iomux_uart(void)
 {
+	SETUP_IOMUX_PADS(uart1_pads);
 }
 
 #ifdef CONFIG_MXC_SPI
