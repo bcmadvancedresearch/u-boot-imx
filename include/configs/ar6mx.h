@@ -15,6 +15,7 @@
 #include "mx6_common.h"
 
 #define CONFIG_SYS_GENERIC_BOARD
+#define CONFIG_SYS_TEXT_BASE           0x17800000
 
 /* Machine config */
 #define CONFIG_SYS_LITTLE_ENDIAN
