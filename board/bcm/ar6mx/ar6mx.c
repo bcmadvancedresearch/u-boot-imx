@@ -30,6 +30,13 @@
 #include <asm/io.h>
 #include <asm/arch/sys_proto.h>
 
+#ifdef CONFIG_FSL_FASTBOOT
+#include <fsl_fastboot.h>
+#ifdef CONFIG_ANDROID_RECOVERY
+#include <recovery.h>
+#endif
+#endif /*CONFIG_FSL_FASTBOOT*/
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #define AR6MX_ENET_RST  IMX_GPIO_NR(1, 25)
@@ -565,12 +572,52 @@ int check_recovery_cmd_file(void)
     int button_pressed = 0;
     int recovery_mode = 0;
 
+    recovery_mode = recovery_check_and_clean_flag();
+
     return recovery_mode || button_pressed;
 }
 
 void board_recovery_setup(void)
 {
 
+	switch (get_boot_device()) {
+#if defined(CONFIG_FASTBOOT_STORAGE_SATA)
+	case SATA_BOOT:
+		if (!getenv("bootcmd_android_recovery"))
+			setenv("bootcmd_android_recovery", "boota sata recovery");
+		break;
+#endif /*CONFIG_FASTBOOT_STORAGE_SATA*/
+#if defined(CONFIG_FASTBOOT_STORAGE_MMC)
+	case SD2_BOOT:
+	case MMC2_BOOT:
+	    if (!getenv("bootcmd"))
+			setenv("bootcmd", "boota mmc0");
+	    break;
+	case SD3_BOOT:
+	case MMC3_BOOT:
+	    if (!getenv("bootcmd_android_recovery")) {
+        if(detect_hdmi(&displays[1]))
+          setenv("bootcmd_android_recovery", "run bootargs_hdmi;boota mmc0 recovery");
+        else
+          setenv("bootcmd_android_recovery", "run bootargs_ldb;boota mmc0 recovery");
+      }
+	    break;
+	case MMC4_BOOT:
+	    if (!getenv("bootcmd_android_recovery")) {
+        if(detect_hdmi(&displays[1]))
+          setenv("bootcmd_android_recovery", "run bootargs_hdmi;boota mmc1 recovery");
+        else
+          setenv("bootcmd_android_recovery", "run bootargs_ldb;boota mmc1 recovery");
+      }
+	    break;
+#endif /*CONFIG_FASTBOOT_STORAGE_MMC*/
+	default:
+		printf("unsupported boot devices\n");
+		break;
+	}
+
+	printf("setup env for recovery..\n");
+	setenv("bootcmd", "run bootcmd_android_recovery");
 }
 
 int check_key_pressing(void)
@@ -580,7 +627,7 @@ int check_key_pressing(void)
 
 void setup_recovery_env(void)
 {
-	//board_recovery_setup();
+	board_recovery_setup();
 }
 
 /* export to lib_arm/board.c */
