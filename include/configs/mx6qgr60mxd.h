@@ -24,7 +24,7 @@
 /* Overrides setting */
 #undef 	CONFIG_PHY_ATHEROS
 #define CONFIG_PHY_MICREL
-#undef 	CONFIG_ANDROID_RECOVERY
+#define	CONFIG_ANDROID_RECOVERY
 
 #define CONFIG_CMD_FUSE
 #ifdef CONFIG_CMD_FUSE

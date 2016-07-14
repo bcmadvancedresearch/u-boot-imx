@@ -699,13 +699,13 @@ void board_recovery_setup(void)
 
 	switch (bootdev) {
 #if defined(CONFIG_FASTBOOT_STORAGE_MMC)
-	case SD1_BOOT:
-	case MMC1_BOOT:
+	case SD3_BOOT:
+	case MMC3_BOOT:
 		if (!getenv("bootcmd_android_recovery"))
 			setenv("bootcmd_android_recovery", "boota mmc0 recovery");
 		break;
-	case SD3_BOOT:
-	case MMC3_BOOT:
+	case SD4_BOOT:
+	case MMC4_BOOT:
 		if (!getenv("bootcmd_android_recovery"))
 			setenv("bootcmd_android_recovery", "boota mmc1 recovery");
 		break;
