@@ -447,7 +447,7 @@ struct display_info_t const displays[] = {{
 size_t display_count = ARRAY_SIZE(displays);
 
 iomux_v3_cfg_t const backlight_pads[] = {
-	MX6_PAD_SD1_CMD__GPIO1_IO18 | MUX_PAD_CTRL(ENET_PAD_CTRL),
+	MX6_PAD_SD1_CMD__GPIO1_IO18 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_KEY_COL1__GPIO4_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_KEY_ROW1__GPIO4_IO09 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	MX6_PAD_KEY_COL2__GPIO4_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -458,8 +458,8 @@ static void setup_iomux_backlight(void)
 {
 	imx_iomux_v3_setup_multiple_pads(backlight_pads,
 					 ARRAY_SIZE(backlight_pads));
-	gpio_direction_output(IMX_GPIO_NR(1, 18), 1);
-	gpio_direction_output(IMX_GPIO_NR(4, 8), 1);
+	gpio_direction_output(IMX_GPIO_NR(1, 18), 0);
+	gpio_direction_output(IMX_GPIO_NR(4, 8), 0);
 	gpio_direction_output(IMX_GPIO_NR(4, 9), 1);
 	gpio_direction_output(IMX_GPIO_NR(4, 10), 1);
 	gpio_direction_output(IMX_GPIO_NR(1, 7), 0);
@@ -473,7 +473,7 @@ static void setup_display(void)
 	struct iomuxc *iomux = (struct iomuxc *)IOMUXC_BASE_ADDR;
 	int reg;
 
-	setup_iomux_backlight();
+	//setup_iomux_backlight();
 
 	/* Setup HSYNC, VSYNC, DISP_CLK for debugging purposes */
 	imx_iomux_v3_setup_multiple_pads(di0_pads, ARRAY_SIZE(di0_pads));
@@ -523,7 +523,7 @@ static void setup_display(void)
 	writel(reg, &iomux->gpr[3]);
 
 	/* Enable LCD power */
-	gpio_direction_output(IMX_GPIO_NR(4, 8), 1);
+	gpio_direction_output(IMX_GPIO_NR(4, 8), 0);
 	gpio_direction_output(IMX_GPIO_NR(4, 9), 1);
 	gpio_direction_output(IMX_GPIO_NR(4, 10), 1);
 
@@ -541,8 +541,8 @@ int overwrite_console(void)
 
 int board_early_init_f(void)
 {
+	setup_iomux_backlight();
 	setup_iomux_uart();
-
 	return 0;
 }
 
