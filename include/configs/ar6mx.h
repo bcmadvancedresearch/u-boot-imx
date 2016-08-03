@@ -28,6 +28,7 @@
 #define CONFIG_TIMESTAMP
 
 /* CMD */
+#include <config_cmd_default.h>
 #define CONFIG_CMD_GREPENV
 #undef CONFIG_CMD_FLASH
 #undef CONFIG_CMD_LOADB
