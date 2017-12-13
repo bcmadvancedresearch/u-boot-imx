@@ -8,17 +8,19 @@
  * SPDX-License-Identifier:     GPL-2.0+
  */
 
+#include <common.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/imx-regs.h>
 #include <asm/arch/crm_regs.h>
 #include <asm/arch/iomux.h>
 #include <asm/arch/mx6-pins.h>
-#include <asm/errno.h>
+#include <linux/errno.h>
 #include <asm/gpio.h>
 #include <asm/imx-common/iomux-v3.h>
 #include <asm/imx-common/mxc_i2c.h>
 #include <asm/imx-common/boot_mode.h>
 #include <asm/imx-common/video.h>
+#include <asm/imx-common/spi.h>
 #include <i2c.h>
 #include <mmc.h>
 #include <fsl_esdhc.h>
@@ -27,6 +29,7 @@
 #include <netdev.h>
 #include <asm/arch/mxc_hdmi.h>
 #include <asm/arch/crm_regs.h>
+#include <asm/imx-common/video.h>
 #include <asm/io.h>
 #include <asm/arch/sys_proto.h>
 
@@ -492,4 +495,8 @@ int board_late_init(void)
 	add_board_boot_modes(board_boot_modes);
 #endif
 	return 0;
+}
+
+void ldo_mode_set(int ldo_bypass)
+{
 }
