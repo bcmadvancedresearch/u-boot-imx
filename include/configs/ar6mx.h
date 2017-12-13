@@ -30,9 +30,7 @@
 #undef CONFIG_CMD_IMLS
 
 /* MMC */
-#define CONFIG_MMC
 #define CONFIG_CMD_MMC
-#define CONFIG_GENERIC_MMC
 #define CONFIG_FSL_ESDHC
 #define CONFIG_FSL_USDHC
 #define CONFIG_SYS_FSL_USDHC_NUM	2
@@ -42,7 +40,6 @@
 #define CONFIG_CMD_EXT2
 #define CONFIG_CMD_EXT4
 #define CONFIG_CMD_FAT
-#define CONFIG_DOS_PARTITION
 #define CONFIG_CMD_FS_GENERIC
 
 /* RAM */
@@ -67,7 +64,6 @@
 
 /* Shell */
 #define CONFIG_SYS_LONGHELP
-#define CONFIG_SYS_HUSH_PARSER
 #define CONFIG_AUTO_COMPLETE
 #define CONFIG_SYS_PROMPT	"AR6MX > "
 #define CONFIG_CMDLINE_EDITING
@@ -76,7 +72,6 @@
 					sizeof(CONFIG_SYS_PROMPT) + 16)
 
 /* SPI flash */
-#define CONFIG_SYS_NO_FLASH
 #define CONFIG_CMD_SF
 #define CONFIG_SF_DEFAULT_BUS		2
 #define CONFIG_SF_DEFAULT_CS		0
@@ -286,17 +281,23 @@
 #define CONFIG_CMD_BOOTZ
 #define CONFIG_STACKSIZE			(128 * 1024)
 #define CONFIG_SYS_MALLOC_LEN			(10 * 1024 * 1024)
-#define CONFIG_SYS_U_BOOT_MAX_SIZE_SECTORS	800 /* 400 KB */
-
-/* Device Tree Support */
-#define CONFIG_OF_LIBFDT
 
 /* SPL */
-#define CONFIG_SPL_MMC_SUPPORT
 #include "imx6_spl.h"
 #define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_FLASH_SUPPORT
 #define CONFIG_SYS_SPI_U_BOOT_OFFS	(69 * 1024)
-#define CONFIG_SPL_SPI_LOAD
+
+/* Falcon Mode */
+#define CONFIG_SPL_FS_LOAD_ARGS_NAME	"args"
+#define CONFIG_SPL_FS_LOAD_KERNEL_NAME	"uImage"
+#define CONFIG_CMD_SPL
+#define CONFIG_SYS_SPL_ARGS_ADDR       0x18000000
+#define CONFIG_CMD_SPL_WRITE_SIZE      (128 * SZ_1K)
+
+/* Falcon Mode - MMC support: args@1MB kernel@2MB */
+#define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTOR  0x800   /* 1MB */
+#define CONFIG_SYS_MMCSD_RAW_MODE_ARGS_SECTORS (CONFIG_CMD_SPL_WRITE_SIZE / 512)
+#define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR        0x1000  /* 2MB */
 
 #endif	/* __CONFIG_AR6MX_H */
