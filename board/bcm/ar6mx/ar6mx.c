@@ -33,6 +33,10 @@
 #include <asm/io.h>
 #include <asm/arch/sys_proto.h>
 
+#ifdef CONFIG_CMD_SATA
+#include <asm/imx-common/sata.h>
+#endif
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #define AR6MX_ENET_RST  IMX_GPIO_NR(1, 25)
