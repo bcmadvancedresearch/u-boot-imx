@@ -100,18 +100,16 @@
   #define CONFIG_ENV_SPI_MAX_HZ          CONFIG_SF_DEFAULT_SPEED
 #endif
 
-#define CONFIG_BOOTDELAY          3
 #define CONFIG_IPADDR             10.1.2.156
 #define CONFIG_SERVERIP           10.1.2.189
 #define CONFIG_MMCROOT      "/dev/mmcblk0p2"
-#define CONFIG_CONSOLE_DEV    "ttymxc0"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"script=boot.scr\0" \
 	"image=uImage\0" \
 	"boot_fdt=try\0" \
 	"bootenv=uEnv.txt\0" \
-	"console=" CONFIG_CONSOLE_DEV "\0" \
+	"console=ttymxc0\0" \
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
 	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
