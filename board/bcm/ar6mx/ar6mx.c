@@ -231,12 +231,6 @@ static void do_enable_hdmi(struct display_info_t const *dev)
 	imx_enable_hdmi_phy();
 }
 
-static int detect_i2c(struct display_info_t const *dev)
-{
-	return i2c_set_bus_num(dev->bus) == 0 &&
-		i2c_probe(dev->addr) == 0;
-}
-
 static void enable_lvds(struct display_info_t const *dev)
 {
 	struct iomuxc *iomux = (struct iomuxc *)
@@ -279,7 +273,7 @@ struct display_info_t const displays[] = {{
 	.bus	= 2,
 	.addr	= 0x50,
 	.pixfmt	= IPU_PIX_FMT_LVDS666,
-	.detect	= detect_i2c,
+	.detect	= NULL,
 	.enable	= enable_lvds,
 	.mode	= {
 		.name           = "wsvga-lvds",
