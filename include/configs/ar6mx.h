@@ -291,6 +291,9 @@
 #define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_FLASH_SUPPORT
 #define CONFIG_SYS_SPI_U_BOOT_OFFS	(69 * 1024)
+#ifdef CONFIG_SPL_BUILD
+#undef CONFIG_DM_MMC
+#endif
 
 /* Falcon Mode */
 #define CONFIG_SPL_FS_LOAD_ARGS_NAME	"args"
