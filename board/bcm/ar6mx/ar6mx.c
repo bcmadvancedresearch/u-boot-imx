@@ -134,6 +134,8 @@ static iomux_v3_cfg_t enet_pads2[] = {
 static void setup_iomux_enet(void)
 {
 	SETUP_IOMUX_PADS(enet_pads1);
+	gpio_request(AR6MX_ENET_RST, "ENET PHY Reset");
+	gpio_request(AR6MX_CLK125_EN, "ENET CLK125 Enable");
 	/* phy reset: gpio1-25 */
 	gpio_direction_output(AR6MX_ENET_RST, 0);
   /* Straping CLK125_EN */
