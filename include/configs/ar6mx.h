@@ -45,6 +45,7 @@
 #define CONFIG_FSL_USDHC
 #define CONFIG_SYS_FSL_USDHC_NUM	2
 #define CONFIG_SYS_FSL_ESDHC_ADDR	USDHC2_BASE_ADDR
+#define CONFIG_SUPPORT_EMMC_BOOT /* eMMC specific */
 
 /* Filesystem support */
 #define CONFIG_CMD_EXT2
