@@ -26,6 +26,12 @@ DECLARE_GLOBAL_DATA_PTR;
 #define AR6MX_GREEN_LED IMX_GPIO_NR(1, 5)
 #define AR6MX_SD3_CD IMX_GPIO_NR(7, 0)
 
+#define AR6MX_VER_B0    IMX_GPIO_NR(4, 25)
+#define AR6MX_VER_B1    IMX_GPIO_NR(4, 26)
+#define AR6MX_VER_B2    IMX_GPIO_NR(4, 27)
+#define AR6MX_VER_B3    IMX_GPIO_NR(4, 28)
+static int version = 0;
+
 /*
  * Below DRAM_RESET[DDR_SEL] = 0 which is incorrect according to
  * Freescale QRM, but this is exactly the value used by the automatic
@@ -248,6 +254,25 @@ static struct mx6_mmdc_calibration mx6dq_128x64_mmdc_calib = {
 	.p1_mpwrdlctl = 0x42303E34,
 };
 
+static struct mx6_mmdc_calibration mx6dq_256x64_mmdc_calib = {
+        /* write leveling calibration determine */
+        .p0_mpwldectrl0 = 0x00180013,
+        .p0_mpwldectrl1 = 0x001F001D,
+        .p1_mpwldectrl0 = 0x000C0021,
+        .p1_mpwldectrl1 = 0x0004001C,
+        /* Read DQS Gating calibration */
+        .p0_mpdgctrl0 = 0x03240334,
+        .p0_mpdgctrl1 = 0x031C0314,
+        .p1_mpdgctrl0 = 0x032C033C,
+        .p1_mpdgctrl1 = 0x03240264,
+        /* Read Calibration: DQS delay relative to DQ read access */
+        .p0_mprddlctl = 0x463C4046,
+        .p1_mprddlctl = 0x48423E54,
+        /* Write Calibration: DQ/DM delay relative to DQS write access */
+        .p0_mpwrdlctl = 0x3438423A,
+        .p1_mpwrdlctl = 0x42364838,
+};
+
 static struct mx6_mmdc_calibration mx6sdl_128x64_mmdc_calib = {
 	/* write leveling calibration determine */
 	.p0_mpwldectrl0 = 0x00430046,
@@ -279,6 +304,51 @@ static struct mx6_mmdc_calibration mx6sdl_256x32_mmdc_calib = {
 	/* Write Calibration: DQ/DM delay relative to DQS write access */
 	.p0_mpwrdlctl = 0x34342C2E,
 };
+
+int ar6mx_board_version(void) {
+  int b3 = 0;
+  int b2 = 0;
+  int b1 = 0;
+  int b0 = 0;
+  int ret = 0;
+
+  /* read board version registers connected to gpio pins and
+     DISP0_DAT4 on i.MX6Q/DL - DISP; CSI */
+  b3 = gpio_get_value(AR6MX_VER_B3);
+  b2 = gpio_get_value(AR6MX_VER_B2);
+  b1 = gpio_get_value(AR6MX_VER_B1);
+  b0 = gpio_get_value(AR6MX_VER_B0);
+  ret |= (b3 << 3);
+  ret |= (b2 << 2);
+  ret |= (b1 << 1);
+  ret |= (b0 << 0);
+
+  /* print board version in serial console */
+  /*
+  if (ret == 15) {
+     printf("Board Version: %x%x%x%x or 0x%x (TAB Solo)\n",
+            b3, b2, b1, b0, ret);
+  }
+  else if (ret == 1) {
+     printf("Board Version: %x%x%x%x or 0x%x (TAB2 Quad)\n",
+            b3, b2, b1, b0, ret);
+  }
+  else {
+     printf("Board Version: %x%x%x%x or 0x%x (Unknown)\n",
+            b3, b2, b1, b0, ret);
+  }
+  */
+  /* update bootargs with board version, could be done in
+     kernel board file, but okay here too */
+  /*
+  char* cmdline = getenv("bootargs_base");
+  char* cmdline_a = (char *) malloc(strlen(cmdline) + 24);
+  sprintf(cmdline_a, "%s board_version=%x%x%x%x ", cmdline, b3, b2, b1, b0);
+  setenv("bootargs_base", cmdline_a);
+  free(cmdline_a);
+  */
+  return ret;
+}
 
 static void ar6mx_spl_dram_init(void)
 {
@@ -314,6 +384,8 @@ static void ar6mx_spl_dram_init(void)
 	 *   mx6_ddr_sysinfo - board-specific memory architecture (width/cs/etc)
 	 *   mx6_ddr_cfg - chip specific timing/layout details
 	 */
+
+	/*
 	switch (get_cpu_type()) {
 	case MXC_CPU_MX6SOLO:
 		width = 32;
@@ -333,6 +405,20 @@ static void ar6mx_spl_dram_init(void)
 		calib = &mx6dq_128x64_mmdc_calib;
 		debug("2gB density\n");
 		break;
+	}
+	*/
+	version = ar6mx_board_version();
+	switch (version) {
+        case 1:
+                mem = &h5tq2g63dfr;
+                calib = &mx6dq_128x64_mmdc_calib;
+                debug("2gB density\n");
+                break;
+        case 2:
+                mem = &h5tq4g63afr;
+                calib = &mx6dq_256x64_mmdc_calib;
+                debug("4gB density\n");
+                break;
 	}
 
 	if (!mem) {
