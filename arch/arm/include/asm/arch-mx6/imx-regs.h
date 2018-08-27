@@ -395,6 +395,10 @@
 #define FEC_QUIRK_ENET_MAC
 #define SNVS_LPGPR                   0x68
 
+#define GPIO_DR         0x00000000      /* data register */
+#define GPIO_GDIR       0x00000004      /* direction register */
+#define GPIO_PSR        0x00000008      /* pad status register */
+
 #if !(defined(__KERNEL_STRICT_NAMES) || defined(__ASSEMBLY__))
 #include <asm/types.h>
 

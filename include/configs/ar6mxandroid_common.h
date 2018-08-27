@@ -42,6 +42,16 @@
 #define CONFIG_USB_FASTBOOT_BUF_ADDR   CONFIG_SYS_LOAD_ADDR
 #define CONFIG_USB_FASTBOOT_BUF_SIZE   0x19000000
 
+#define CONFIG_FASTBOOT                1
+#define CONFIG_FASTBOOT_VENDOR_ID      0x18d1
+#define CONFIG_FASTBOOT_PRODUCT_ID     0x0d02
+#define CONFIG_FASTBOOT_BCD_DEVICE     0x311
+#define CONFIG_FASTBOOT_MANUFACTURER_STR  "Freescale"
+#define CONFIG_FASTBOOT_PRODUCT_NAME_STR "i.mx6 AR6MX Board"
+#define CONFIG_FASTBOOT_INTERFACE_STR    "Android fastboot"
+#define CONFIG_FASTBOOT_CONFIGURATION_STR  "Android fastboot"
+#define CONFIG_FASTBOOT_SERIAL_NUM      "12345"
+#define CONFIG_FASTBOOT_SATA_NO          0
 
 /* which mmc bus is your main storage ? */
 #define CONFIG_ANDROID_MAIN_MMC_BUS 3
@@ -56,9 +66,14 @@
 #define CONFIG_SUPPORT_RAW_INITRD
 #define CONFIG_SERIAL_TAG
 
+/* Display logo, could be customized for distributors */
+#define CONFIG_CMD_BMP
+/* May need to get a guid from time to time */
+#define CONFIG_CMD_UUID
+
 #undef CONFIG_EXTRA_ENV_SETTINGS
 #undef CONFIG_BOOTCOMMAND
-
+/*
 #define CONFIG_EXTRA_ENV_SETTINGS					\
 	"splashpos=m,m\0"	  \
 	"fdt_high=0xffffffff\0"	  \
@@ -80,6 +95,18 @@
 			"video=mxcfb2:off vmalloc=400M "	\
 			"androidboot.selinux=disabled "	\
 			"androidboot.console=ttymxc0 androidboot.hardware=freescale\0"
+*/
+#define CONFIG_EXTRA_ENV_SETTINGS                                       \
+        "splashpos=m,m\0"         \
+        "fdt_high=0xffffffff\0"   \
+        "fdt_addr=0x14f00000\0"   \
+        "initrd_high=0xffffffff\0" \
+        "bootargs=console=ttymxc0,115200\0"     \
+        "bootargs_base=setenv bootargs console=ttymxc0,115200 "\
+                "vmalloc=400M androidboot.console=ttymxc0 "\
+        "ldb_di_clk_sel=pll5_video_div "\
+                "androidboot.hardware=freescale "\
+                "video=mxcfb0:bpp=32\0"
 
 
 #endif /* AR6MX_ANDROID_COMMON_H */
