@@ -323,18 +323,18 @@ static void ar6mx_spl_dram_init(void)
 		sysinfo.dsize = 1;
 		mem = &h5tq4g63afr;
 		calib = &mx6sdl_256x32_mmdc_calib;
-		debug("2gB density\n");
+		debug("512MBx2 = 1GB density\n");
 		break;
 	case MXC_CPU_MX6DL:
 		mem = &h5tq2g63dfr;
 		calib = &mx6sdl_128x64_mmdc_calib;
-		debug("2gB density\n");
+		debug("256MBx4 = 1GB density\n");
 		break;
 	case MXC_CPU_MX6D:
 	case MXC_CPU_MX6Q:
 		mem = &h5tq2g63dfr;
 		calib = &mx6dq_128x64_mmdc_calib;
-		debug("2gB density\n");
+		debug("256MBx4 = 1GB density\n");
 		break;
 	}
 
