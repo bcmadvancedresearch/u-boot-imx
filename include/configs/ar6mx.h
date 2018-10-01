@@ -99,7 +99,7 @@
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"script=boot.scr\0" \
-	"image=uImage\0" \
+	"image=zImage\0" \
 	"boot_fdt=try\0" \
 	"bootenv=uEnv.txt\0" \
 	"console=ttymxc0\0" \
@@ -117,8 +117,8 @@
 			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
 	"bootargs_mmc2b=video=mxcfb0:dev=ldb,1024x600M@60,if=RGB666,bpp=32 " \
 			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
-	"bootargs_mmc3a=root=/dev/mmcblk0p1 rootwait consoleblank=0 \0" \
-	"bootargs_mmc3b=root=/dev/mmcblk0p2 rootwait consoleblank=0 \0" \
+	"bootargs_mmc3a=root=/dev/mmcblk2p1 rootwait consoleblank=0 \0" \
+	"bootargs_mmc3b=root=/dev/mmcblk2p2 rootwait consoleblank=0 \0" \
 	"bootargs_hdmi=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2a} \0" \
 	"bootargs_ldb=setenv bootargs ${bootargs_mmc1} ${bootargs_mmc2b} \0" \
 	"detect_hdmi=" \
@@ -147,16 +147,16 @@
 		"fi; " \
 		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
 			"if run loadfdt; then " \
-				"bootm ${loadaddr} - ${fdt_addr}; " \
+				"bootz ${loadaddr} - ${fdt_addr}; " \
 			"else " \
 				"if test ${boot_fdt} = try; then " \
-					"bootm; " \
+					"bootz; " \
 				"else " \
 					"echo WARN: Cannot load the DT; " \
 				"fi; " \
 			"fi; " \
 		"else " \
-			"bootm; " \
+			"bootz; " \
 		"fi;\0" \
 	"loadbootscript=for dtype in ${bootdevs}" \
 		"; do " \
