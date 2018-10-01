@@ -139,12 +139,6 @@
 	"loadfdt=load mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"run mmcargs; " \
-		"if itest.s \"x6SOLO\" == \"x${cpu}\" || " \
-			"itest.s \"x6DL\" == \"x${cpu}\"; then " \
-			"setenv fdt_file imx6dl-ar6mx.dtb ;" \
-		"else " \
-			"setenv fdt_file imx6q-ar6mx.dtb ;" \
-		"fi; " \
 		"if test ${boot_fdt} = yes || test ${boot_fdt} = try; then " \
 			"if run loadfdt; then " \
 				"bootz ${loadaddr} - ${fdt_addr}; " \

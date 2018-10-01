@@ -494,6 +494,22 @@ static const struct boot_mode board_boot_modes[] = {
 
 int board_late_init(void)
 {
+    char fdt[36];
+    const char *cputype = "";
+    const char *str = "ar6mx";
+
+    if (is_cpu_type(MXC_CPU_MX6Q) ||
+        is_cpu_type(MXC_CPU_MX6D))
+        cputype = "imx6q";
+    else if (is_cpu_type(MXC_CPU_MX6DL) ||
+            is_cpu_type(MXC_CPU_MX6SOLO))
+        cputype = "imx6dl";
+
+    if (!getenv("fdt_file")) {
+        sprintf(fdt, "%s-%s.dtb", cputype, str);
+        setenv("fdt_file", fdt);
+    }
+
 	setenv("cpu", get_imx_type(get_cpu_type()));
 #ifdef CONFIG_CMD_BMODE
 	add_board_boot_modes(board_boot_modes);
