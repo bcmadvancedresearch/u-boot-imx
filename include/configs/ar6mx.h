@@ -95,8 +95,6 @@
   #define CONFIG_ENV_SPI_MAX_HZ          CONFIG_SF_DEFAULT_SPEED
 #endif
 
-#define CONFIG_IPADDR             10.1.2.156
-#define CONFIG_SERVERIP           10.1.2.189
 #define CONFIG_MMCROOT      "/dev/mmcblk0p2"
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
