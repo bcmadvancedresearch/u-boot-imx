@@ -30,7 +30,6 @@ DECLARE_GLOBAL_DATA_PTR;
 #define AR6MX_VER_B1    IMX_GPIO_NR(4, 26)
 #define AR6MX_VER_B2    IMX_GPIO_NR(4, 27)
 #define AR6MX_VER_B3    IMX_GPIO_NR(4, 28)
-static int version = 0;
 
 /*
  * Below DRAM_RESET[DDR_SEL] = 0 which is incorrect according to
@@ -353,6 +352,7 @@ int ar6mx_board_version(void) {
 static void ar6mx_spl_dram_init(void)
 {
 	int width = 64;
+	int version = 0;
 	struct mx6_ddr3_cfg *mem = NULL;
 	struct mx6_mmdc_calibration *calib = NULL;
 	struct mx6_ddr_sysinfo sysinfo = {
