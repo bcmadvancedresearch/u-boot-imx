@@ -82,7 +82,7 @@
 #define CONFIG_ENV_OVERWRITE
 #define CONFIG_ENV_IS_IN_MMC
 #if defined(CONFIG_ENV_IS_IN_MMC)
-  #define CONFIG_ENV_OFFSET              (8 * 64 * 1024)
+  #define CONFIG_ENV_OFFSET              (896 * 1024)
   #define CONFIG_ENV_SIZE                (8 * 1024)
   #define CONFIG_SYS_MMC_ENV_DEV         0
 #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
