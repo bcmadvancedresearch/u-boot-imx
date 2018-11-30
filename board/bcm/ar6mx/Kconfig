@@ -1,4 +1,4 @@
-if TARGET_BCM_AR6MX
+if TARGET_BCM_AR6MX || TARGET_BCM_BH6MX
 
 config SYS_BOARD
 	default "ar6mx"

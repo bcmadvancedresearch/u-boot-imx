@@ -118,6 +118,9 @@ config TARGET_BCM_AR6MXCS
 	select DM
 	select DM_THERMAL
 
+config TARGET_BCM_BH6MX
+	bool "ar6mx"
+
 config TARGET_CGTQMX6EVAL
 	bool "cgtqmx6eval"
 	select BOARD_LATE_INIT
