@@ -512,6 +512,10 @@ int board_late_init(void)
     char fdt[36];
     const char *cputype = "";
     const char *str = "ar6mx";
+#ifdef CONFIG_FSL_FASTBOOT
+    u32 dev_no;
+    char new_bootcmd[32] = {0};
+#endif
 
     if (is_cpu_type(MXC_CPU_MX6Q) ||
         is_cpu_type(MXC_CPU_MX6D))
@@ -528,6 +532,16 @@ int board_late_init(void)
 	setenv("cpu", get_imx_type(get_cpu_type()));
 #ifdef CONFIG_CMD_BMODE
 	add_board_boot_modes(board_boot_modes);
+#endif
+
+#ifdef CONFIG_FSL_FASTBOOT
+    dev_no = mmc_get_env_dev();
+    if(detect_hdmi(&displays[1]))
+        sprintf(new_bootcmd, "run bootargs_hdmi; boota mmc%d", dev_no);
+    else
+        sprintf(new_bootcmd, "run bootargs_ldb; boota mmc%d", dev_no);
+
+    setenv("bootcmd", new_bootcmd);
 #endif
 	return 0;
 }
