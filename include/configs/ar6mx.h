@@ -302,7 +302,7 @@
 #define CONFIG_SYS_MMCSD_RAW_MODE_KERNEL_SECTOR        0x1000  /* 2MB */
 
 #if defined(CONFIG_ANDROID_SUPPORT)
-#include "mx6sabreandroid_common.h"
+#include "ar6mxandroid_common.h"
 #endif
 
 #endif	/* __CONFIG_AR6MX_H */
