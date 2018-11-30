@@ -217,6 +217,11 @@ int board_mmc_init(bd_t *bis)
 
 	return 0;
 }
+
+int board_mmc_get_env_dev(int devno)
+{
+    return devno - 2;
+}
 #endif
 
 #if defined(CONFIG_VIDEO_IPUV3)
