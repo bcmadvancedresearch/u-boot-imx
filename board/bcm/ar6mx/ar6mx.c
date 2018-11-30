@@ -156,9 +156,15 @@ iomux_v3_cfg_t const uart1_pads[] = {
 	IOMUX_PADS(PAD_SD3_DAT7__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 };
 
+iomux_v3_cfg_t const uart4_pads[] = {
+        IOMUX_PADS(PAD_KEY_COL0__UART4_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+        IOMUX_PADS(PAD_KEY_ROW0__UART4_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+};
+
 static void setup_iomux_uart(void)
 {
 	SETUP_IOMUX_PADS(uart1_pads);
+	SETUP_IOMUX_PADS(uart4_pads);
 }
 
 #ifdef CONFIG_MXC_SPI
