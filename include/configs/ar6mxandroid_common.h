@@ -32,6 +32,12 @@
 
 #undef CONFIG_EXTRA_ENV_SETTINGS
 
+#ifdef CONFIG_TARGET_BCM_BH6MX
+#define SERIAL_CONSOLE      "ttymxc3"
+#else
+#define SERIAL_CONSOLE      "ttymxc0"
+#endif
+
 #define CONFIG_EXTRA_ENV_SETTINGS					\
 	"splashpos=m,m\0"	  \
 	"fdt_high=0xffffffff\0"	  \
