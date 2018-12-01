@@ -9,7 +9,6 @@
 #ifndef __CONFIG_AR6MX_H
 #define __CONFIG_AR6MX_H
 
-#include <asm/arch/imx-regs.h>
 #include "mx6_common.h"
 
 /* Machine config */
