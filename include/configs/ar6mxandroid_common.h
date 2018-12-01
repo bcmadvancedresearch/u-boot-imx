@@ -42,23 +42,17 @@
 	"splashpos=m,m\0"	  \
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
-		"bootargs=console=ttymxc0,115200\0"	\
-		"bootargs_ldb=setenv bootargs ${bootargs} init=/init "	\
-			"video=mxcfb0:dev=ldb,1024x600M@60,if=RGB666,bpp=32 " \
+		"bootargs=console=" SERIAL_CONSOLE ",115200 "	\
 			"video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off vmalloc=400M "	\
-			"androidboot.selinux=disabled "	\
+			"cma=512M galcore.contiguousSize=6710886 \0"	\
+		"bootargs_an=androidboot.console=" SERIAL_CONSOLE \
+			" androidboot.selinux=permissive "	\
 			"androidboot.console=ttymxc0 androidboot.hardware=freescale\0"	\
+		"bootargs_ldb=setenv bootargs ${bootargs} init=/init "	\
+			"video=mxcfb0:dev=ldb,if=RGB24,bpp=32 " \
+			"${bootargs_an}\0"	\
 		"bootargs_hdmi=setenv bootargs ${bootargs} init=/init "	\
 			"video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24,bpp=32 " \
-			"video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off vmalloc=400M "	\
-			"androidboot.selinux=disabled "	\
-			"androidboot.console=ttymxc0 androidboot.hardware=freescale\0"	\
-		"bootargs_lcd=setenv bootargs ${bootargs} init=/init "	\
-			"video=mxcfb0:dev=lcd,TIANMA,if=RGB24,bpp=32 " \
-			"video=mxcfb1:off " \
-			"video=mxcfb2:off video=mxcfb3:off vmalloc=400M "	\
-			"androidboot.selinux=disabled "	\
-			"androidboot.console=ttymxc0 androidboot.hardware=freescale\0"
-
+			"${bootargs_an}\0"	\
 
 #endif /* AR6MX_ANDROID_COMMON_H */
