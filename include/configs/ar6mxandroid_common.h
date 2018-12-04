@@ -52,7 +52,7 @@
 			"video=mxcfb0:dev=ldb,if=RGB24,bpp=32 " \
 			"${bootargs_an}\0"	\
 		"bootargs_hdmi=setenv bootargs ${bootargs} init=/init "	\
-			"video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24,bpp=32 " \
+			"video=mxcfb0:dev=hdmi,1280x720M@60,if=RGB24,bpp=32 " \
 			"${bootargs_an}\0"	\
 
 #endif /* AR6MX_ANDROID_COMMON_H */

@@ -115,7 +115,7 @@
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
 	"bootargs_mmc1=console=ttymxc0,115200 console=tty1\0" \
-	"bootargs_mmc2a=video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24,bpp=32 " \
+	"bootargs_mmc2a=video=mxcfb0:dev=hdmi,1280x720M@60,if=RGB24,bpp=32 " \
 			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
 	"bootargs_mmc2b=video=mxcfb0:dev=ldb,1024x600M@60,if=RGB666,bpp=32 " \
 			"video=mxcfb1:off video=mxcfb2:off fbmem=28M\0" \
