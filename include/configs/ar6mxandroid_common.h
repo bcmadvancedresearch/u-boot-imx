@@ -34,8 +34,12 @@
 
 #ifdef CONFIG_TARGET_BCM_BH6MX
 #define SERIAL_CONSOLE      "ttymxc3"
+#define CMA_SIZE "512M"
+#define CONTI_SIZE "67108864"
 #else
 #define SERIAL_CONSOLE      "ttymxc0"
+#define CMA_SIZE "448M"
+#define CONTI_SIZE "33554432"
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS					\
@@ -43,8 +47,8 @@
 	"fdt_high=0xffffffff\0"	  \
 	"initrd_high=0xffffffff\0" \
 		"bootargs=console=" SERIAL_CONSOLE ",115200 "	\
-			"video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off vmalloc=400M "	\
-			"cma=512M galcore.contiguousSize=6710886 \0"	\
+			"video=mxcfb1:off video=mxcfb2:off video=mxcfb3:off vmalloc=128M "	\
+			"cma=" CMA_SIZE " galcore.contiguousSize=" CONTI_SIZE "\0"	\
 		"bootargs_an=androidboot.console=" SERIAL_CONSOLE \
 			" androidboot.selinux=permissive "	\
 			"androidboot.console=ttymxc0 androidboot.hardware=freescale\0"	\
