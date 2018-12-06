@@ -36,10 +36,12 @@
 #define SERIAL_CONSOLE      "ttymxc3"
 #define CMA_SIZE "512M"
 #define CONTI_SIZE "67108864"
+#define RGB_FORMAT "RGB24"
 #else
 #define SERIAL_CONSOLE      "ttymxc0"
 #define CMA_SIZE "448M"
 #define CONTI_SIZE "33554432"
+#define RGB_FORMAT "RGB666"
 #endif
 
 #define CONFIG_EXTRA_ENV_SETTINGS					\
@@ -53,7 +55,7 @@
 			" androidboot.selinux=permissive "	\
 			"androidboot.console=ttymxc0 androidboot.hardware=freescale\0"	\
 		"bootargs_ldb=setenv bootargs ${bootargs} init=/init "	\
-			"video=mxcfb0:dev=ldb,if=RGB24,bpp=32 " \
+			"video=mxcfb0:dev=ldb,if=" RGB_FORMAT ",bpp=32 " \
 			"${bootargs_an}\0"	\
 		"bootargs_hdmi=setenv bootargs ${bootargs} init=/init "	\
 			"video=mxcfb0:dev=hdmi,1280x720M@60,if=RGB24,bpp=32 " \
