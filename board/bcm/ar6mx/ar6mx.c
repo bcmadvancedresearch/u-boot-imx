@@ -372,7 +372,7 @@ int mmc_get_env_devno(void)
 	 * see the comments in board_mmc_init function
 	 */
 
-	dev_no--;
+	dev_no=dev_no - 2;
 
 	return dev_no;
 }
