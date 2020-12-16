@@ -8,12 +8,13 @@
  * SPDX-License-Identifier:     GPL-2.0+
  */
 
+#include <common.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/imx-regs.h>
 #include <asm/arch/crm_regs.h>
 #include <asm/arch/iomux.h>
 #include <asm/arch/mx6-pins.h>
-#include <asm/errno.h>
+#include <linux/errno.h>
 #include <asm/gpio.h>
 #include <asm/imx-common/iomux-v3.h>
 #include <asm/imx-common/mxc_i2c.h>
@@ -27,6 +28,7 @@
 #include <netdev.h>
 #include <asm/arch/mxc_hdmi.h>
 #include <asm/arch/crm_regs.h>
+#include <asm/imx-common/video.h>
 #include <asm/io.h>
 #include <asm/arch/sys_proto.h>
 
@@ -66,6 +68,7 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define OUTPUT_40OHM (PAD_CTL_SPEED_MED|PAD_CTL_DSE_40ohm)
 
+#ifdef CONFIG_SYS_I2C
 /* I2C1, CSI, Audio Codec, Mini PCIe, DS1307 */
 I2C_PADS(i2c0_pads,
 	 PAD_CSI0_DAT9__I2C1_SCL | MUX_PAD_CTRL(I2C_PAD_CTRL),
@@ -92,6 +95,7 @@ I2C_PADS(i2c2_pads,
 	 PAD_GPIO_6__I2C3_SDA | MUX_PAD_CTRL(I2C_PAD_CTRL),
 	 PAD_GPIO_6__GPIO1_IO06 | MUX_PAD_CTRL(I2C_PAD_CTRL),
 	 IMX_GPIO_NR(1, 6));
+#endif
 
 /* ENET */
 iomux_v3_cfg_t const enet_pads1[] = {
@@ -164,8 +168,6 @@ int board_mmc_init(bd_t *bis)
 {
 	int ret;
 	u32 index = 0;
-	struct src *psrc = (struct src *)SRC_BASE_ADDR;
-	unsigned reg = readl(&psrc->sbmr1) >> 11;
 
 	usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 	usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
@@ -176,24 +178,19 @@ int board_mmc_init(bd_t *bis)
 	/* SD3 card-detect */
 	gpio_direction_input(AR6MXCS_SD3_CD);
 
-	switch (reg & 0x3) {
-	case 0x2:
+
 		for (index = 0; index < CONFIG_SYS_FSL_USDHC_NUM; ++index) {
 			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
 			if (ret)
 				return ret;
 		}
-		break;
-	case 0x3:
-		for (index = CONFIG_SYS_FSL_USDHC_NUM - 1; index >= 0; --index) {
-			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[index]);
-			if (ret)
-				return ret;
-		}
-		break;
-	}
 
 	return 0;
+}
+
+int board_mmc_get_env_dev(int devno)
+{
+    return devno - 2;
 }
 #endif
 
@@ -221,12 +218,6 @@ static void do_enable_hdmi(struct display_info_t const *dev)
 {
 	disable_lvds(dev);
 	imx_enable_hdmi_phy();
-}
-
-static int detect_i2c(struct display_info_t const *dev)
-{
-	return i2c_set_bus_num(dev->bus) == 0 &&
-		i2c_probe(dev->addr) == 0;
 }
 
 static void enable_lvds(struct display_info_t const *dev)
@@ -271,7 +262,7 @@ struct display_info_t const displays[] = {{
 	.bus	= 2,
 	.addr	= 0x50,
 	.pixfmt	= IPU_PIX_FMT_LVDS666,
-	.detect	= detect_i2c,
+	.detect	= NULL,
 	.enable	= enable_lvds,
 	.mode	= {
 		.name           = "wsvga-lvds",
@@ -461,9 +452,11 @@ int board_init(void)
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM_1 + 0x100;
 
+#ifdef CONFIG_SYS_I2C
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, I2C_PADS_INFO(i2c0_pads));
 	setup_i2c(1, CONFIG_SYS_I2C_SPEED, 0x7f, I2C_PADS_INFO(i2c1_pads));
 	setup_i2c(2, CONFIG_SYS_I2C_SPEED, 0x7f, I2C_PADS_INFO(i2c2_pads));
+#endif
 
 	return 0;
 }
@@ -486,21 +479,68 @@ static const struct boot_mode board_boot_modes[] = {
 
 int board_late_init(void)
 {
-	struct src *psrc = (struct src *)SRC_BASE_ADDR;
-	unsigned reg = readl(&psrc->sbmr1) >> 11;
+    char fdt[36];
+    const char *cputype = "";
+    const char *str = "ar6mx";
+#ifdef CONFIG_FSL_FASTBOOT
+    u32 dev_no;
+    char new_bootcmd[32] = {0};
+#endif
 
-	switch (reg & 0x3) {
-	case 0x2:
-		setenv("mmcdev", "0");
-		break;
-	case 0x3:
-		setenv("mmcdev", "0");
-		break;
-	}
+    if (is_cpu_type(MXC_CPU_MX6Q) ||
+        is_cpu_type(MXC_CPU_MX6D))
+        cputype = "imx6q";
+    else if (is_cpu_type(MXC_CPU_MX6DL) ||
+            is_cpu_type(MXC_CPU_MX6SOLO))
+        cputype = "imx6dl";
+
+    if (!getenv("fdt_file")) {
+        sprintf(fdt, "%s-%s.dtb", cputype, str);
+        setenv("fdt_file", fdt);
+    }
 
 	setenv("cpu", get_imx_type(get_cpu_type()));
 #ifdef CONFIG_CMD_BMODE
 	add_board_boot_modes(board_boot_modes);
 #endif
+
+#ifdef CONFIG_FSL_FASTBOOT
+    dev_no = mmc_get_env_dev();
+    if(detect_hdmi(&displays[1]))
+        sprintf(new_bootcmd, "run bootargs_hdmi; boota mmc%d", dev_no);
+    else
+        sprintf(new_bootcmd, "run bootargs_ldb; boota mmc%d", dev_no);
+
+    setenv("bootcmd", new_bootcmd);
+#endif
 	return 0;
 }
+
+void ldo_mode_set(int ldo_bypass)
+{
+}
+
+#ifdef CONFIG_FSL_FASTBOOT
+#ifdef CONFIG_ANDROID_RECOVERY
+
+#define GPIO_VOL_DN_KEY IMX_GPIO_NR(2, 0) // TTL_DI0 = pin 1 of CN5
+
+int is_recovery_key_pressing(void)
+{
+	int button_pressed = 0;
+
+	/* Check Recovery Combo Button press or not. */
+
+	gpio_request(GPIO_VOL_DN_KEY, "volume_dn_key");
+	gpio_direction_input(GPIO_VOL_DN_KEY);
+
+	if (gpio_get_value(GPIO_VOL_DN_KEY) == 0) { /* VOL_DN key is low assert */
+		button_pressed = 1;
+		printf("Recovery key pressed\n");
+	}
+
+	return  button_pressed;
+}
+
+#endif /*CONFIG_ANDROID_RECOVERY*/
+#endif /*CONFIG_FSL_FASTBOOT*/

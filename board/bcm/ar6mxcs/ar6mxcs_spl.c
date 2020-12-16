@@ -19,6 +19,7 @@
 #include <asm/arch/crm_regs.h>
 #include <asm/imx-common/iomux-v3.h>
 #include <fsl_esdhc.h>
+#include <mmc.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
