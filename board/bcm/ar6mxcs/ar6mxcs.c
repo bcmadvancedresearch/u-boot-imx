@@ -481,7 +481,7 @@ int board_late_init(void)
 {
     char fdt[36];
     const char *cputype = "";
-    const char *str = "ar6mx";
+    const char *str = "ar6mxcs";
 #ifdef CONFIG_FSL_FASTBOOT
     u32 dev_no;
     char new_bootcmd[32] = {0};
