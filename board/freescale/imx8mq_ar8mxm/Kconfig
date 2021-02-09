@@ -1,0 +1,14 @@
+if TARGET_IMX8MQ_AR8MXM || TARGET_IMX8MQ_AR8MXM_4GB
+
+config SYS_BOARD
+	default "imx8mq_ar8mxm"
+
+config SYS_VENDOR
+	default "freescale"
+
+config SYS_CONFIG_NAME
+	default "imx8mq_ar8mxm"
+
+source "board/freescale/common/Kconfig"
+
+endif
